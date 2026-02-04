@@ -1,72 +1,278 @@
-import React, { useEffect, useState } from "react";
+
+// import React, { useEffect, useState, useRef } from "react";
+// import styled from "styled-components";
+// import { useNavigate } from "react-router-dom";
+// import { signOut } from "firebase/auth";
+// import { firebaseAuth } from "../utils/firebase-config";
+// import { FaUserCircle, FaCaretDown } from "react-icons/fa";
+
+// const Header = () => {
+//   const [scrolled, setScrolled] = useState(false);
+//   const [query, setQuery] = useState("");
+//   const [showDropdown, setShowDropdown] = useState(false);
+//   const dropdownRef = useRef(null);
+//   const navigate = useNavigate();
+
+//   useEffect(() => {
+//     const handleScroll = () => setScrolled(window.scrollY > 40);
+//     window.addEventListener("scroll", handleScroll);
+
+//     const handleClickOutside = (event) => {
+//       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+//         setShowDropdown(false);
+//       }
+//     };
+//     document.addEventListener("mousedown", handleClickOutside);
+
+//     return () => {
+//       window.removeEventListener("scroll", handleScroll);
+//       document.removeEventListener("mousedown", handleClickOutside);
+//     };
+//   }, []);
+
+//   const handleSearch = (e) => {
+//     if (e.key === "Enter" && query.trim()) {
+//       // ✅ This sends the query to the Search page
+//       navigate(`/search?q=${encodeURIComponent(query)}`);
+//     }
+//   };
+
+//   const handleLogout = async () => {
+//     await signOut(firebaseAuth);
+//     navigate("/login");
+//   };
+
+//   return (
+//     <Nav $scrolled={scrolled}>
+//       <Left>
+//         <Logo onClick={() => navigate("/")}>MOCTALE</Logo>
+//         <Menu>
+//           <span onClick={() => navigate("/webseries")}>Webseries</span>
+//           <span onClick={() => navigate("/watchlist")}>Watchlist</span>
+//           <span onClick={() => navigate("/IndianCinema")}>Cinema</span>
+//           <span onClick={() => navigate("/ai")}>AI ✨</span>
+//         </Menu>
+//       </Left>
+
+//       <Right>
+//         <SearchInput
+//           type="text"
+//           placeholder="Search movies..."
+//           value={query}
+//           onChange={(e) => setQuery(e.target.value)}
+//           onKeyDown={handleSearch}
+//         />
+        
+//         <ProfileContainer ref={dropdownRef}>
+//           <ProfileTrigger onClick={() => setShowDropdown(!showDropdown)}>
+//             <FaUserCircle size={26} />
+//             <FaCaretDown size={14} />
+//           </ProfileTrigger>
+
+//           {showDropdown && (
+//             <Dropdown>
+//               <li onClick={() => navigate("/profile")}>Account</li>
+//               <li onClick={() => navigate("/watchlist")}>Watchlist</li>
+//               <hr />
+//               <li className="logout" onClick={handleLogout}>Logout</li>
+//             </Dropdown>
+//           )}
+//         </ProfileContainer>
+//       </Right>
+//     </Nav>
+//   );
+// };
+
+// export default Header;
+
+// /* ================= STYLES ================= */
+
+// const Nav = styled.header`
+//   position: fixed;
+//   top: 0;
+//   width: 100%;
+//   height: 65px;
+//   box-sizing: border-box;
+//   padding: 0 4%;
+//   display: flex;
+//   align-items: center;
+//   justify-content: space-between;
+//   z-index: 1000;
+//   background: ${({ $scrolled }) =>
+//     $scrolled ? "#000" : "linear-gradient(to bottom, rgba(0,0,0,0.8), transparent)"};
+//   transition: 0.3s;
+// `;
+
+// const Left = styled.div`
+//   display: flex;
+//   align-items: center;
+//   gap: 30px; /* Reduced space */
+// `;
+
+// const Logo = styled.h1`
+//   color: #a78bfa;
+//   font-size: 1.4rem;
+//   font-weight: 900;
+//   cursor: pointer;
+//   letter-spacing: 1px;
+// `;
+
+// const Menu = styled.nav`
+//   display: flex;
+//   gap: 20px;
+//   span {
+//     color: #fff;
+//     font-size: 0.85rem;
+//     cursor: pointer;
+//     opacity: 0.8;
+//     &:hover { opacity: 1; color: #a78bfa; }
+//   }
+// `;
+
+// const Right = styled.div`
+//   display: flex;
+//   align-items: center;
+//   gap: 15px;
+// `;
+
+// const SearchInput = styled.input`
+//   background: rgba(0,0,0,0.5);
+//   border: 1px solid #444;
+//   color: white;
+//   padding: 6px 12px;
+//   border-radius: 4px;
+//   font-size: 0.8rem;
+//   width: 160px;
+//   outline: none;
+//   &:focus { border-color: #a78bfa; }
+// `;
+
+// const ProfileContainer = styled.div`
+//   position: relative;
+// `;
+
+// const ProfileTrigger = styled.div`
+//   display: flex;
+//   align-items: center;
+//   gap: 4px;
+//   cursor: pointer;
+//   color: white;
+// `;
+
+// const Dropdown = styled.ul`
+//   position: absolute;
+//   top: 40px;
+//   right: 0;
+//   background: #111;
+//   border: 1px solid #333;
+//   width: 130px;
+//   padding: 8px 0;
+//   list-style: none;
+//   border-radius: 4px;
+//   li {
+//     padding: 8px 15px;
+//     font-size: 0.8rem;
+//     color: white;
+//     cursor: pointer;
+//     &:hover { background: #6d28d9; }
+//   }
+//   hr { border: 0; border-top: 1px solid #333; margin: 5px 0; }
+//   .logout { color: #ff4d4d; }
+// `;
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { firebaseAuth } from "../utils/firebase-config";
-import { signOut } from "firebase/auth";
+import { FaUserCircle, FaCaretDown } from "react-icons/fa";
 
 const Header = () => {
   const [scrolled, setScrolled] = useState(false);
+  const [user, setUser] = useState(null);
   const [query, setQuery] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
+    // 1. Detect Auth State (Guest vs User)
+    const unsubscribe = onAuthStateChanged(firebaseAuth, (currentUser) => {
+      setUser(currentUser ? currentUser : null);
+    });
+
+    // 2. Handle Scroll transparency
+    const handleScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    // 3. Close profile dropdown when clicking outside
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      unsubscribe();
+      window.removeEventListener("scroll", handleScroll);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   const handleSearch = (e) => {
     if (e.key === "Enter" && query.trim()) {
       navigate(`/search?q=${encodeURIComponent(query)}`);
-      setQuery("");
     }
   };
 
   const handleLogout = async () => {
     await signOut(firebaseAuth);
-    navigate("/login");
+    navigate("/"); // Navigate back to the cinematic landing page
   };
 
   return (
     <Nav $scrolled={scrolled}>
       <Left>
-        <Logo onClick={() => navigate("/")}>MOCTALE</Logo>
-
+        <Logo onClick={() => navigate("/browse")}>MOCTALE</Logo>
         <Menu>
-          <span onClick={() => navigate("/")}>Movies</span>
+          <span onClick={() => navigate("/browse")}>Movies</span>
           <span onClick={() => navigate("/webseries")}>Webseries</span>
-          <span onClick={() => navigate("/upcoming")}>Upcoming</span>
+          <span onClick={() => navigate("/watchlist")}>Watchlist</span>
+          <span onClick={() => navigate("/IndianCinema")}>Cinema</span>
           <span onClick={() => navigate("/ai")}>AI ✨</span>
         </Menu>
       </Left>
 
       <Right>
-        <Search
+        <SearchInput
           type="text"
-          placeholder="Search movies, actors..."
+          placeholder="Search movies..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleSearch}
         />
+        
+        {user ? (
+          /* ✅ Show Profile for Logged-In Users */
+          <ProfileContainer ref={dropdownRef}>
+            <ProfileTrigger onClick={() => setShowDropdown(!showDropdown)}>
+              <FaUserCircle size={26} color="#a78bfa" />
+              <FaCaretDown size={14} color="white" />
+            </ProfileTrigger>
 
-        <Profile>
-          <img
-            src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
-            alt="profile"
-          />
-
-          <Dropdown>
-            <button onClick={() => navigate("/watchlist")}>
-              📌 My Watchlist
-            </button>
-            <button onClick={() => navigate("/profile")}>
-              ✏️ Edit Profile
-            </button>
-            <button onClick={handleLogout} className="logout">
-              🚪 Logout
-            </button>
-          </Dropdown>
-        </Profile>
+            {showDropdown && (
+              <Dropdown>
+                <li onClick={() => navigate("/profile")}>Account</li>
+                <li onClick={() => navigate("/watchlist")}>Watchlist</li>
+                <hr />
+                <li className="logout" onClick={handleLogout}>Logout</li>
+              </Dropdown>
+            )}
+          </ProfileContainer>
+        ) : (
+          /* ✅ Show Login Button for Guests */
+          <SignInBtn onClick={() => navigate("/signup")}>Sign In</SignInBtn>
+        )}
       </Right>
     </Nav>
   );
@@ -76,18 +282,20 @@ export default Header;
 
 /* ================= STYLES ================= */
 
-const Nav = styled.div`
+const Nav = styled.header`
   position: fixed;
   top: 0;
   width: 100%;
   height: 70px;
-  padding: 0 40px;
+  box-sizing: border-box;
+  padding: 0 4%;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  z-index: 1000;
   background: ${({ $scrolled }) =>
-    $scrolled ? "rgba(5,0,30,0.95)" : "transparent"};
-  z-index: 99999;   ✅✅ ABSOLUTE HIGHEST
+    $scrolled ? "rgba(0, 0, 0, 0.95)" : "linear-gradient(to bottom, rgba(0,0,0,0.8), transparent)"};
+  transition: 0.3s;
 `;
 
 const Left = styled.div`
@@ -97,91 +305,87 @@ const Left = styled.div`
 `;
 
 const Logo = styled.h1`
-  font-size: 1.6rem;
   color: #a78bfa;
+  font-size: 1.5rem;
+  font-weight: 900;
   cursor: pointer;
+  letter-spacing: 2px;
 `;
 
-const Menu = styled.div`
+const Menu = styled.nav`
   display: flex;
   gap: 20px;
-
   span {
-    color: white;
+    color: #fff;
+    font-size: 0.85rem;
     cursor: pointer;
-    font-size: 0.9rem;
-  }
-
-  span:hover {
-    color: #a78bfa;
+    opacity: 0.8;
+    transition: 0.2s;
+    &:hover { opacity: 1; color: #a78bfa; }
   }
 `;
 
 const Right = styled.div`
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 15px;
 `;
 
-const Search = styled.input`
-  width: 240px;
-  padding: 8px 14px;
-  border-radius: 20px;
-  background: black;
+const SearchInput = styled.input`
+  background: rgba(255,255,255,0.1);
+  border: 1px solid #333;
   color: white;
-  border: 1px solid #6d28d9;
+  padding: 7px 15px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  width: 180px;
   outline: none;
+  &:focus { border-color: #a78bfa; background: rgba(0,0,0,0.5); }
 `;
 
-const Profile = styled.div`
+const ProfileContainer = styled.div`
   position: relative;
-
-  img {
-    width: 36px;
-    height: 36px;
-    border-radius: 999px;
-    border: 2px solid #6d28d9;
-    cursor: pointer;
-  }
-
-  &:hover div {
-    opacity: 1;
-    pointer-events: auto;
-    transform: translateY(0);
-  }
 `;
 
-const Dropdown = styled.div`
+const ProfileTrigger = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+`;
+
+const Dropdown = styled.ul`
   position: absolute;
   top: 45px;
   right: 0;
-  background: #0f0030;
-  display: flex;
-  flex-direction: column;
-  padding: 10px;
-  border-radius: 10px;
-  min-width: 170px;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(-10px);
-  transition: 0.2s;
-
-  button {
-    background: none;
-    border: none;
-    color: white;
-    text-align: left;
-    padding: 8px;
-    cursor: pointer;
+  background: #111;
+  border: 1px solid #333;
+  width: 140px;
+  padding: 8px 0;
+  list-style: none;
+  border-radius: 4px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+  li {
+    padding: 10px 18px;
     font-size: 0.85rem;
-    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+    &:hover { background: #6d28d9; }
   }
+  hr { border: 0; border-top: 1px solid #333; margin: 5px 0; }
+  .logout { color: #ff4d4d; font-weight: bold; }
+`;
 
-  button:hover {
-    background: #6d28d9;
-  }
-
-  .logout:hover {
-    background: #b91c1c;
-  }
+const SignInBtn = styled.button`
+  background: #6d28d9;
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: 0.3s;
+  &:hover { background: #5b21b6; }
 `;

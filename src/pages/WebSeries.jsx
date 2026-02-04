@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import Header from "../components/Header";
 
 const Webseries = () => {
   const navigate = useNavigate();
@@ -74,6 +73,7 @@ const Webseries = () => {
 
   return (
     <Container>
+      
 
       {renderRow("🔥 Trending Web Series", trending)}
       {renderRow("🎬 Hotstar Originals", hotstar)}

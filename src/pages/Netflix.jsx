@@ -199,6 +199,10 @@ const Container = styled.div`
   background: #000;
   color: white;
 `;
+const Page = styled.div`
+  padding-top: 72px; /* SAME as header min-height */
+`;
+
 
 /* ✅ NAVBAR */
 const Navbar = styled.div`

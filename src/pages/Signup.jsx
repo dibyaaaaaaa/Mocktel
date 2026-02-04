@@ -98,7 +98,7 @@ const Signup = () => {
           {isLogin ? "Create New Account" : "Already Have Account"}
         </button>
 
-        <p className="back" onClick={() => navigate("/signin")}>
+        <p className="back" onClick={() => navigate("/Login")}>
           ← Back to Login Page
         </p>
       </LeftPanel>

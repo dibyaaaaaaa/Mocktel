@@ -233,9 +233,8 @@ const Header = () => {
   return (
     <Nav $scrolled={scrolled}>
       <Left>
-        <Logo onClick={() => navigate("/browse")}>MOCTALE</Logo>
+        <Logo onClick={() => navigate("/")}>MOCTALE</Logo>
         <Menu>
-          <span onClick={() => navigate("/browse")}>Movies</span>
           <span onClick={() => navigate("/webseries")}>Webseries</span>
           <span onClick={() => navigate("/watchlist")}>Watchlist</span>
           <span onClick={() => navigate("/IndianCinema")}>Cinema</span>
